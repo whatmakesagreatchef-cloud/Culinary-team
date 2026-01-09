@@ -1,120 +1,168 @@
-# Culinary Strategy Sim — v0.3.0 (Flat Modular, No Folders)
+# The Final Season — v0.4.0 (Narrative Edition)
 
-A single-page culinary competition strategy game where you manage a chef competing through a 12-week season. Balance menu complexity, fatigue, risk, sponsor obligations, and rival pressure to win competitions.
+A narrative-driven culinary strategy game where you manage a chef through 12 weeks of intense competition.
 
-## New in v0.3.0
+## What's New in v0.4.0 - Narrative Edition
 
-- **6 Countries + Story Arcs**: Australia (WA), Japan, France, Italy, USA, Thailand - each with unique perks and branching story choices
-- **Rival System**: Face a rival competitor with signature menus tracked across competitions
-- **Signature Dish Library**: Import competitor signatures in Menu Lab as templates
-- **Fundraising Mini-game**: Bronze → Platinum tiers add budget + obligations (miss deliverables → penalties)
-- **Report Card Tab**: Win rate, avg score, fatigue avg, top failure cause analysis
-- **Telemetry Export**: Compare different builds and strategies
+### 🎭 Full Story Experience
+- **Title Screen** - Proper game menu with New Game / Continue / About
+- **Character Creation** - Choose from 6 countries, each with unique backstory
+- **Week Intros** - Narrative setup for each week with context and stakes
+- **Competition Intros** - Story moments before each major competition
+- **Ending Narratives** - Multiple endings based on your performance
 
-## Features
+### 🎬 Screen Flow
+1. Title Screen → Character Creation → Backstory
+2. Week Intro → Game Screen (Story/Actions/Menu/Competition tabs)
+3. Competition Results → Week Intro (repeat)
+4. Season End → Credits & Stats
 
-### Core Loop
-- **12-week season** with 4 competitions (weeks 3, 6, 9, 12)
-- **Story choices** each week (A/B decisions affecting stats)
-- **One action per week**: Train, R&D, Sponsor meetings, Deliverables, Scout, Recovery
-- **Random events**: Equipment failures, mentor visits, breakthrough moments
-- **Auto-save** to localStorage
+### 🎮 Enhanced Gameplay
+- **Tab-Based Interface** - Story, Actions, Menu Lab, Competition (when available)
+- **Progress Tracking** - Visual progress bars, week-by-week narrative
+- **Pause Menu** - Save, Export Telemetry, Help, Quit to Title
+- **Better Feedback** - Animated transitions, result screens, visual polish
+
+### 📖 Story Features
+- **6 Unique Backstories** - Each country has deep narrative context
+- **Weekly Narratives** - Story beats for every week
+- **Choice Consequences** - Story choices have mechanical effects
+- **Multiple Endings** - Champion, Respected Finalist, or Lessons Learned
+
+## Countries & Backstories
+
+### 🦘 Australia (WA)
+*Ocean to red dirt. Provenance + standards.*
+- Perks: Extra budget, rep, consistency boost
+- Rival: France
+- Story: Learn standards in harsh conditions, prove regional identity matters
+
+### 🇯🇵 Japan
+*Precision culture. Calm is power.*
+- Perks: High consistency & composure, rep gain boost
+- Rival: USA
+- Story: Silent discipline vs loud ambition
+
+### 🇫🇷 France
+*Technique expected. Organisation wins.*
+- Perks: High technique, sponsor interest, failure risk reduction
+- Rival: Japan
+- Story: Escape the weight of tradition, prove you're more than a name
+
+### 🇮🇹 Italy
+*Simplicity, depth, timing. Perfect the basics.*
+- Perks: High palate & morale
+- Rival: Thailand
+- Story: Flavor conquers everything—if you can execute
+
+### 🇺🇸 USA
+*Big swings, big speed, big pressure.*
+- Perks: High prep & creativity
+- Rival: Japan
+- Story: Speed and ambition vs precision and restraint
+
+### 🇹🇭 Thailand
+*Balance, aroma, heat. Clean chaos.*
+- Perks: High palate & creativity
+- Rival: Italy
+- Story: Intuitive balance vs structured simplicity
+
+## Gameplay Loop
+
+Each week:
+1. **Week Intro** - Story setup, check stats
+2. **Story Choice** - A/B decision affecting stats (if available)
+3. **Action** - One weekly action (train, R&D, scout, etc.)
+4. **Advance** - Move to next week (recovery, events, obligations)
+5. **Competition** - Weeks 3, 6, 9, 12 (plan approach, rehearsal, spend)
+
+## Key Systems
 
 ### Menu Lab
-- Build menus from modular parts: protein, technique, sauce, garnish, dessert
-- Generates: Cost, Prep Load, Wow factor, Menu Risk
+- Build from: Protein, Technique, Sauce, Garnish, Dessert
+- Generates: Cost, Prep Load, Wow Factor, Risk
 - Import competitor signatures as templates
-- Test cook feature to reduce variance
+- Test cook to reduce variance
 
-### Competition System
-- Choose approach: Safe / Standard / Bold
-- Optional rehearsals: Timing / Clean bench / Taste calibration
-- Optional spend (0-400) for last-minute improvements
-- Scout rival before competitions to reduce variance
-- Rival AI picks signature dishes based on competition emphasis
+### Competition Planning
+- **Approach**: Safe / Standard / Bold (affects variance & score)
+- **Rehearsal**: Timing / Clean Bench / Taste (adds bonuses)
+- **Optional Spend**: 0-400 for last-minute improvements
 
 ### Resource Management
 - **Stats**: Technique, Palate, Creativity, Cleanliness, Consistency, Composure
 - **Resources**: Budget, Reputation, Sponsor Interest
-- **Risks**: Fatigue, Risk level, Morale, Prep capacity
+- **Risks**: Fatigue (drops morale/consistency), Risk (increases penalties)
 - **Obligations**: Sponsor deliverables with deadlines
 
-### Scoring System
-Core score from:
-- Palate + Technique + Cleanliness + Consistency
-- Menu impact (wow + creativity)
-- Prep boost (if Prep KPI > menu prep)
-- Penalties (fatigue + stacked risk)
-- Variance (reduced by scouting + test cooking)
+### Rival System
+- Each country faces a specific rival with signature dishes
+- Rivals compete alongside you in competitions
+- Track rival wins vs your wins
 
 ## Installation
 
-### GitHub Pages (Mobile-friendly)
-1. Upload all files to your repo root (no folders)
-2. GitHub → Settings → Pages → Deploy from branch → `main` / `(root)`
-3. Your game will be live at: `https://username.github.io/repo-name/`
+### GitHub Pages
+1. Upload all files to repo root (no folders)
+2. Settings → Pages → Deploy from `main` / `(root)`
+3. Game will be live at: `https://username.github.io/repo-name/`
 
-### Local Testing
-Open `index.html` in a web browser. Works offline after first load.
+### Local
+Open `index.html` in a modern browser. Works offline.
 
-## File Structure (Flat, No Folders)
+## File Structure
 
 ```
-index.html              # Entry point
-styles.css              # All styling
-ui.js                   # UI rendering & interactions
+index.html              # Entry point with screen system
+styles.css              # Enhanced styling with animations
+ui.js                   # Screen management & narrative flow
 systems.js              # Game logic & mechanics
 state.js                # State management & localStorage
 telemetry.js            # Logging & export
+data_narrative.js       # Backstories, week narratives, endings
 data_countries.js       # Country definitions + story arcs
 data_competitors.js     # Rival competitors + signatures
 data_menu_parts.js      # Menu component definitions
 data_events.js          # Random weekly events
-README.md               # This file
 ```
 
-## Usage Tips
+## Controls
 
-### Build IDs
-Use semantic build IDs like `v0.3.1-riskTuned` or `v0.3.2-menuSimplify` to track experiments. Export telemetry after each season to compare what changed.
+- **Arrow Keys / Mouse** - Navigate menus and choices
+- **ESC** - Open pause menu (or click Menu button)
+- **Tab-based navigation** - Story / Actions / Menu Lab / Competition
 
-### Strategy Tips
-- **Menu Prep** should stay near/below your **Prep** KPI
-- Use **Test Cook** + **Scout Rival** before competition weeks
-- Fundraising adds **obligations** - clear them with **Deliver Sponsor Pack**
-- If **Fatigue** > 55, morale and consistency will drop
-- Competition emphasis affects scoring weights
+## Strategy Tips
 
-### Country Perks
-- **Australia (WA)**: Extra budget, rep, consistency boost
-- **Japan**: High consistency & composure, rep gain boost
-- **France**: High technique, sponsor interest, failure risk reduction
-- **Italy**: High palate & morale
-- **USA**: High prep & creativity
-- **Thailand**: High palate & creativity
+### Early Game (Weeks 1-4)
+- Build solid foundations (technique, cleanliness)
+- Don't overextend on sponsor obligations
+- Keep menu prep manageable
 
-## Technical Details
+### Mid Game (Weeks 5-8)
+- Scout rival before Week 6 competition
+- Manage fatigue (recovery week around Week 7)
+- Refine menu based on competition emphasis
 
-- **Vanilla JavaScript** (ES6 modules)
-- **No frameworks or build tools**
-- **localStorage** for auto-save
-- **Responsive CSS Grid** layout
-- **Mobile-friendly** interface
-- **Offline-capable** after first load
+### Late Game (Weeks 9-12)
+- Test cook before Week 9 and 12
+- Clear all obligations before final
+- Balance risk vs consistency for final push
 
 ## Browser Compatibility
 
-Works in all modern browsers supporting:
-- ES6 modules (`<script type="module">`)
-- localStorage
+Requires modern browser with:
+- ES6 modules
 - CSS Grid
+- localStorage
+- CSS animations
+
+## Credits
+
+**Design & Development**: Narrative culinary strategy sim
+**Version**: v0.4.0 - Narrative Edition
+**Previous Version**: v0.3.0 - Modular flat structure
 
 ## License
 
 Free to use and modify for personal or educational purposes.
-
-## Credits
-
-**Design & Development**: Strategy simulation combining resource management, narrative choices, and competitive pressure.
-
-**Inspiration**: Culinary competitions, roguelike progression, and sports management sims.

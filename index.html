@@ -1,52 +1,169 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Culinary Strategy Sim — v0.3.0</title>
+<title>The Final Season — Culinary Strategy Game</title>
 <link rel="stylesheet" href="./styles.css"/></head><body>
-<header><div class="wrap topbar">
-  <div class="brand"><span class="badge"><span class="dot"></span> Culinary Strategy Sim</span><span class="muted small">v0.3.0 • Flat modular • No folders</span></div>
-  <div class="row"><span class="muted small">Build</span><input id="buildId" class="input" value="v0.3.0" style="width:160px"/>
-    <button id="btnTutorialTop" class="ghost">Tutorial</button>
-    <button id="btnNew">New</button><button id="btnSave">Save</button><button id="btnExport">Export</button>
-    <button id="btnReset" class="ghost">Reset Local</button>
-  </div></div></header>
-<main class="grid">
-  <section class="card">
-    <div class="row between">
-      <div style="flex:1">
-        <h1 id="title">Not started</h1>
-        <div id="subtitle" class="muted small">Choose a country and press Start.</div>
-        <div class="row" style="margin-top:10px">
-          <div class="progress"><div id="progressFill"></div></div>
-          <div class="muted small" id="progressText">Season progress: 0%</div>
-        </div>
-      </div>
-      <div class="row"><select id="countrySelect" class="input"></select><button id="btnStart" class="accent">Start</button></div>
+
+<!-- TITLE SCREEN -->
+<div id="titleScreen" class="screen active">
+  <div class="title-container">
+    <div class="title-glow">
+      <h1 class="game-title">THE FINAL SEASON</h1>
+      <p class="game-subtitle">A Culinary Strategy Game</p>
     </div>
-    <div class="hr"></div>
-    <div class="tabs">
-      <div class="tab active" id="tabDashboard">Dashboard</div>
-      <div class="tab" id="tabMenu">Menu Lab</div>
-      <div class="tab" id="tabComp">Competition</div>
-      <div class="tab" id="tabHelp">Help</div>
-      <div class="tab" id="tabReport" style="display:none">Report</div>
+    <div class="title-menu">
+      <button class="title-btn" id="btnNewGame">New Game</button>
+      <button class="title-btn" id="btnContinue">Continue</button>
+      <button class="title-btn ghost" id="btnAbout">About</button>
     </div>
-    <div class="hr"></div>
-    <div id="kpis" class="kpis"></div>
-    <div class="hr"></div>
-    <div id="storyBlock"></div>
-    <div class="hr"></div>
-    <div id="mainBlock"></div>
-  </section>
-  <aside class="card">
-    <div class="row between"><h2>Telemetry Feed</h2><div class="muted small">Export JSON for build comparisons</div></div>
-    <div class="hr"></div><div id="log" class="log"></div>
-  </aside>
-</main>
-<div class="modalBack" id="modalBack" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="Tutorial">
-    <div class="row between"><h2 id="modalTitle">Tutorial</h2><button id="modalClose" class="ghost">Close</button></div>
-    <div class="hr"></div><div id="modalBody"></div><div class="hr"></div>
-    <div class="row between"><button id="modalPrev" class="ghost">Back</button><button id="modalNext" class="accent">Next</button></div>
+    <div class="version">v0.4.0 — Narrative Edition</div>
   </div>
 </div>
-<script type="module" src="./ui.js"></script></body></html>
+
+<!-- CHARACTER CREATION -->
+<div id="charCreation" class="screen">
+  <div class="story-container">
+    <div class="story-header">
+      <h2>Choose Your Path</h2>
+      <div class="story-progress"><div class="story-progress-bar" style="width:25%"></div></div>
+    </div>
+    
+    <div class="story-content">
+      <p class="story-text">
+        You've spent years in kitchens around the world. Now, the call has come: 
+        a 12-week competition circuit that could define your career forever.
+      </p>
+      <p class="story-text">
+        But first — <em>where does your story begin?</em>
+      </p>
+      
+      <div class="country-grid" id="countryGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BACKSTORY -->
+<div id="backstory" class="screen">
+  <div class="story-container">
+    <div class="story-header">
+      <h2 id="backstoryTitle">Your Journey</h2>
+      <div class="story-progress"><div class="story-progress-bar" style="width:50%"></div></div>
+    </div>
+    
+    <div class="story-content">
+      <div id="backstoryContent" class="story-prose"></div>
+      <button class="btn-primary" id="btnStartJourney">Begin Your Season</button>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK INTRO -->
+<div id="weekIntro" class="screen">
+  <div class="story-container">
+    <div class="story-header">
+      <h2 id="weekTitle">Week 1</h2>
+      <div class="story-progress"><div class="story-progress-bar" id="weekProgressBar"></div></div>
+    </div>
+    
+    <div class="story-content">
+      <div id="weekNarrative" class="story-prose"></div>
+      <div id="weekStats" class="week-stats"></div>
+      <button class="btn-primary" id="btnEnterWeek">Enter Week</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GAME -->
+<div id="gameScreen" class="screen">
+  <header><div class="wrap topbar">
+    <div class="brand">
+      <span class="badge"><span class="dot"></span> <span id="headerWeek">Week 1</span></span>
+      <span class="muted small" id="headerCountry"></span>
+    </div>
+    <div class="row">
+      <span class="muted small">Build</span><input id="buildId" class="input" value="v0.4.0" style="width:140px"/>
+      <button id="btnMenu" class="ghost">Menu</button>
+    </div>
+  </div></header>
+
+  <main class="grid">
+    <section class="card">
+      <div class="tabs">
+        <div class="tab active" id="tabStory">Story</div>
+        <div class="tab" id="tabActions">Actions</div>
+        <div class="tab" id="tabMenu">Menu Lab</div>
+        <div class="tab" id="tabComp" style="display:none">Competition</div>
+      </div>
+      <div class="hr"></div>
+      <div id="mainContent"></div>
+    </section>
+    
+    <aside class="card">
+      <h2>Your Progress</h2>
+      <div class="hr"></div>
+      <div id="kpis" class="kpis"></div>
+      <div class="hr"></div>
+      <div id="recentLog" class="log-compact"></div>
+    </aside>
+  </main>
+</div>
+
+<!-- COMPETITION RESULTS -->
+<div id="compResults" class="screen">
+  <div class="story-container">
+    <div class="story-header">
+      <h2 id="compResultTitle">Competition Results</h2>
+    </div>
+    
+    <div class="story-content">
+      <div id="compResultContent" class="comp-result"></div>
+      <button class="btn-primary" id="btnCompContinue">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEASON END -->
+<div id="seasonEnd" class="screen">
+  <div class="story-container">
+    <div class="story-header">
+      <h2>Season Complete</h2>
+    </div>
+    
+    <div class="story-content">
+      <div id="seasonEndContent" class="story-prose"></div>
+      <div class="title-menu">
+        <button class="title-btn" id="btnPlayAgain">Play Again</button>
+        <button class="title-btn ghost" id="btnExportFinal">Export Telemetry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAUSE MENU -->
+<div class="modalBack" id="pauseMenu" aria-hidden="true">
+  <div class="modal pause-modal" role="dialog">
+    <h2>Menu</h2>
+    <div class="hr"></div>
+    <div class="menu-options">
+      <button id="btnResume" class="btn-primary">Resume</button>
+      <button id="btnSaveGame" class="ghost">Save Game</button>
+      <button id="btnExportTelemetry" class="ghost">Export Telemetry</button>
+      <button id="btnHelp" class="ghost">Help & Tips</button>
+      <button id="btnQuitToTitle" class="ghost warn">Quit to Title</button>
+    </div>
+  </div>
+</div>
+
+<!-- HELP MODAL -->
+<div class="modalBack" id="helpModal" aria-hidden="true">
+  <div class="modal" role="dialog">
+    <div class="row between">
+      <h2>Help & Tips</h2>
+      <button id="btnCloseHelp" class="ghost">Close</button>
+    </div>
+    <div class="hr"></div>
+    <div id="helpContent"></div>
+  </div>
+</div>
+
+<script type="module" src="./ui.js"></script>
+</body></html>
