@@ -1,11 +1,13 @@
+// ui-enhanced.js - Enhanced UI with competition flow fixes
 import { COUNTRIES } from "./data_countries.js";
 import { COMPETITORS } from "./data_competitors.js";
 import { BACKSTORIES, WEEK_NARRATIVES, COMPETITION_INTROS, ENDING_NARRATIVES } from "./data_narrative.js";
 import { COMP_WEEKS, ACTIONS, FUND_TIERS, money, countryFor, storyNodeForWeek, applyStoryChoice, parts, computeMenu, applyMenuToState, menuTestCook, takeAction, runCompetition, nextWeek as systemNextWeek, applyPerks, chooseRival, startFundraising, seasonReport } from "./systems.js";
 import { defaultState, loadState, saveState, resetLocal } from "./state.js";
 import { log, snap, exportTelemetry } from "./telemetry.js";
+import { competitionManager, getCompetitionUIState } from "./competition-manager.js";
 
-let S = loadState() || defaultState("v0.4.0");
+let S = loadState() || defaultState("v0.5.0");
 let currentScreen = "title";
 let selectedCountry = null;
 
@@ -21,7 +23,7 @@ const screens = {
 
 const el = (id) => document.getElementById(id);
 
-// SCREEN TRANSITIONS
+// ===== SCREEN TRANSITIONS =====
 function showScreen(screenName) {
   const current = screens[currentScreen];
   const next = screens[screenName];
@@ -39,9 +41,9 @@ function showScreen(screenName) {
   }, 300);
 }
 
-// TITLE SCREEN
+// ===== TITLE SCREEN =====
 el("btnNewGame").addEventListener("click", () => {
-  S = defaultState("v0.4.0");
+  S = defaultState("v0.5.0");
   saveState(S);
   showScreen("charCreation");
   renderCountrySelection();
@@ -59,10 +61,10 @@ el("btnContinue").addEventListener("click", () => {
 });
 
 el("btnAbout").addEventListener("click", () => {
-  alert("The Final Season v0.4.0\n\nA narrative culinary strategy game.\n\nManage your chef through 12 weeks of competition, balancing technique, creativity, fatigue, and rival pressure.");
+  alert("The Final Season v0.5.0\n\nA narrative culinary strategy game.\n\nManage your chef through 12 weeks of competition, balancing technique, creativity, fatigue, and rival pressure.");
 });
 
-// CHARACTER CREATION
+// ===== CHARACTER CREATION =====
 function renderCountrySelection() {
   const grid = el("countryGrid");
   grid.innerHTML = COUNTRIES.map(c => {
@@ -111,7 +113,7 @@ el("btnStartJourney").addEventListener("click", () => {
 
 function startSeason(countryId) {
   const country = COUNTRIES.find(c => c.id === countryId);
-  S = defaultState("v0.4.0");
+  S = defaultState("v0.5.0");
   S.countryId = countryId;
   S.started = true;
   
@@ -141,23 +143,30 @@ function startSeason(countryId) {
   showWeekIntro();
 }
 
-// WEEK INTRO
+// ===== WEEK INTRO =====
 function showWeekIntro() {
   const weekNum = S.week;
   const narrative = WEEK_NARRATIVES[weekNum];
-  const comp = COMP_WEEKS[weekNum];
+  const compStatus = getCompetitionUIState(S);
   
   el("weekTitle").textContent = narrative?.title || `Week ${weekNum}`;
   el("weekProgressBar").style.width = `${(weekNum / 12) * 100}%`;
   
   let content = `<p class="story-text">${narrative?.universal || "The competition continues."}</p>`;
   
-  if (comp) {
+  if (compStatus.isCompWeek) {
+    const comp = compStatus.competition;
     const compIntro = COMPETITION_INTROS[weekNum];
     content += `<div class="hr"></div>`;
     content += `<h3 style="margin-bottom:12px">${comp.name}</h3>`;
     content += `<p class="story-text">${compIntro?.narrative || ""}</p>`;
-    content += `<p class="story-text"><em>${comp.emphasis}</em></p>`;
+    content += `<p class="story-text"><em>Emphasis: ${comp.emphasis}</em></p>`;
+    
+    if (compStatus.hasCompleted) {
+      content += `<div class="badge good" style="margin-top:12px">✓ Competition Completed</div>`;
+    } else {
+      content += `<div class="badge warn" style="margin-top:12px">⚠ Must complete competition to advance</div>`;
+    }
   }
   
   el("weekNarrative").innerHTML = content;
@@ -190,19 +199,28 @@ el("btnEnterWeek").addEventListener("click", () => {
   renderGame();
 });
 
-// GAME SCREEN
+// ===== GAME SCREEN =====
 function renderGame() {
   el("headerWeek").textContent = `Week ${S.week} of ${S.weeksTotal}`;
   el("headerCountry").textContent = countryFor(S)?.name || "";
   
+  // Update competition tab visibility
+  const compStatus = getCompetitionUIState(S);
+  el("tabComp").style.display = compStatus.isCompWeek ? "inline-flex" : "none";
+  
+  // Show competition indicator if needed
+  if (compStatus.isCompWeek && !compStatus.hasCompleted) {
+    el("tabComp").classList.add("pulse");
+  } else {
+    el("tabComp").classList.remove("pulse");
+  }
+  
   renderKPIs();
   renderRecentLog();
   
-  // Show comp tab if it's a comp week
-  const isCompWeek = !!COMP_WEEKS[S.week];
-  el("tabComp").style.display = isCompWeek ? "inline-flex" : "none";
-  
-  showTab("story");
+  // Default to story tab or comp tab if competition week
+  const defaultTab = (compStatus.isCompWeek && !compStatus.hasCompleted) ? "comp" : "story";
+  showTab(defaultTab);
 }
 
 let currentTab = "story";
@@ -210,7 +228,8 @@ let currentTab = "story";
 function showTab(tab) {
   currentTab = tab;
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  el("tab" + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
+  const tabEl = el("tab" + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (tabEl) tabEl.classList.add("active");
   
   if (tab === "story") renderStoryTab();
   if (tab === "actions") renderActionsTab();
@@ -273,8 +292,19 @@ function renderStoryTab() {
 }
 
 function renderActionsTab() {
+  const compStatus = getCompetitionUIState(S);
   const actionDisabled = S.lastActionWeek === S.week;
   const oblig = (S.obligations || []).filter(o => !o.done);
+  
+  let advanceButtonText = "Advance to Next Week";
+  let advanceButtonDisabled = false;
+  let advanceWarning = "";
+  
+  if (compStatus.isCompWeek && !compStatus.hasCompleted) {
+    advanceButtonText = "Complete Competition First";
+    advanceButtonDisabled = true;
+    advanceWarning = `<div class="badge warn">⚠ Must complete ${compStatus.competition.name} before advancing</div>`;
+  }
   
   el("mainContent").innerHTML = `
     <div class="panel">
@@ -302,7 +332,10 @@ function renderActionsTab() {
     </div>
     
     <div class="panel mt-2">
-      <button class="btn-primary" id="btnAdvanceWeek">Advance to Next Week</button>
+      ${advanceWarning}
+      <button class="btn-primary ${advanceButtonDisabled ? 'loading' : ''}" id="btnAdvanceWeek" ${advanceButtonDisabled ? 'disabled' : ''}>
+        ${advanceButtonText}
+      </button>
     </div>
   `;
   
@@ -323,7 +356,10 @@ function renderActionsTab() {
     });
   }
   
-  el("btnAdvanceWeek").addEventListener("click", advanceWeek);
+  const advanceBtn = el("btnAdvanceWeek");
+  if (advanceBtn && !advanceButtonDisabled) {
+    advanceBtn.addEventListener("click", advanceWeek);
+  }
 }
 
 function renderMenuTab() {
@@ -433,20 +469,53 @@ function renderMenuTab() {
 }
 
 function renderCompTab() {
-  const comp = COMP_WEEKS[S.week];
-  if (!comp) {
+  const compStatus = getCompetitionUIState(S);
+  
+  if (!compStatus.isCompWeek) {
     el("mainContent").innerHTML = '<div class="panel"><p>No competition this week.</p></div>';
     return;
   }
   
+  const comp = compStatus.competition;
   const calc = computeMenu(S.menu, S.flags);
   const varianceHint = (S.flags.scouted ? "lower" : "normal") + (S.flags.tested ? " (tested)" : "");
+  
+  // Check readiness
+  const readiness = competitionManager.calculateReadiness(S, calc);
+  const readinessColor = readiness.level === "ready" ? "good" : readiness.level === "fair" ? "warn" : "bad";
   
   el("mainContent").innerHTML = `
     <div class="panel">
       <h2>${comp.name}</h2>
       <p class="muted">Entry: ${money(comp.entry)} • Prize: ${money(comp.cash)} + ${comp.rep} rep</p>
       <p class="muted small mt-1">Emphasis: ${comp.emphasis}</p>
+    </div>
+    
+    <div class="panel">
+      <h3 class="mb-1">Readiness Check</h3>
+      <div class="readiness-grid">
+        <div class="readiness-item ${readiness.budget ? 'good' : 'bad'}">
+          ${readiness.budget ? '✓' : '✗'} Budget (${money(S.budget)} / ${money(comp.entry)})
+        </div>
+        <div class="readiness-item ${readiness.fatigue ? 'good' : 'warn'}">
+          ${readiness.fatigue ? '✓' : '⚠'} Fatigue (${Math.round(S.fatigue)})
+        </div>
+        <div class="readiness-item ${readiness.risk ? 'good' : 'warn'}">
+          ${readiness.risk ? '✓' : '⚠'} Risk (${Math.round(S.risk)})
+        </div>
+        <div class="readiness-item ${readiness.menuPrep ? 'good' : 'warn'}">
+          ${readiness.menuPrep ? '✓' : '⚠'} Menu Prep Match
+        </div>
+        <div class="readiness-item ${readiness.scouted ? 'good' : 'muted'}">
+          ${readiness.scouted ? '✓' : '○'} Rival Scouted
+        </div>
+        <div class="readiness-item ${readiness.tested ? 'good' : 'muted'}">
+          ${readiness.tested ? '✓' : '○'} Menu Tested
+        </div>
+      </div>
+      <div class="readiness-summary ${readinessColor}">
+        ${readiness.level.toUpperCase()}: ${readiness.score}/${readiness.total} checks passed
+      </div>
     </div>
     
     <div class="panel">
@@ -462,52 +531,57 @@ function renderCompTab() {
     
     <div class="panel">
       <h3 class="mb-1">Competition Plan</h3>
-      <div class="row" style="margin-bottom:12px;flex-wrap:wrap">
+      <div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:12px">
         <div>
           <label class="muted small">Approach</label>
           <select id="approach" class="input">
-            <option value="safe">Safe</option>
-            <option value="standard" selected>Standard</option>
-            <option value="bold">Bold</option>
+            <option value="safe">Safe (+4 bonus, low variance)</option>
+            <option value="standard" selected>Standard (balanced)</option>
+            <option value="bold">Bold (-2 penalty, high variance)</option>
           </select>
         </div>
         <div>
           <label class="muted small">Rehearsal</label>
           <select id="rehearsal" class="input">
             <option value="none" selected>None</option>
-            <option value="timing">Timing</option>
-            <option value="clean">Clean bench</option>
-            <option value="taste">Taste calibration</option>
+            <option value="timing">Timing (+prep, +consistency)</option>
+            <option value="clean">Clean bench (+cleanliness, -risk)</option>
+            <option value="taste">Taste calibration (+palate, +creativity)</option>
           </select>
         </div>
         <div>
-          <label class="muted small">Spend (0-400)</label>
-          <input id="spend" class="input" type="number" min="0" max="400" value="0" style="width:100px"/>
+          <label class="muted small">Last-minute spend (0-400)</label>
+          <input id="spend" class="input" type="number" min="0" max="400" value="0" style="width:120px"/>
         </div>
       </div>
-      <button class="btn-primary" id="btnRunComp">Enter Competition</button>
+      <button class="btn-primary ${!compStatus.canEnter.ok ? 'loading' : ''}" id="btnRunComp" ${!compStatus.canEnter.ok ? 'disabled' : ''}>
+        ${compStatus.canEnter.ok ? 'Enter Competition' : compStatus.canEnter.reason}
+      </button>
     </div>
   `;
   
-  el("btnRunComp").addEventListener("click", () => {
-    const plan = {
-      approach: el("approach").value,
-      rehearsal: el("rehearsal").value,
-      spend: Number(el("spend").value || 0)
-    };
-    const res = runCompetition(S, plan);
-    if (!res.ok) {
-      alert(res.message);
-      return;
-    }
-    saveState(S);
-    showCompResults(res, comp);
-  });
+  const btnRunComp = el("btnRunComp");
+  if (btnRunComp && compStatus.canEnter.ok) {
+    btnRunComp.addEventListener("click", () => {
+      const plan = {
+        approach: el("approach").value,
+        rehearsal: el("rehearsal").value,
+        spend: Number(el("spend").value || 0)
+      };
+      const res = runCompetition(S, plan);
+      if (!res.ok) {
+        alert(res.message);
+        return;
+      }
+      saveState(S);
+      showCompResults(res, comp);
+    });
+  }
 }
 
 function showCompResults(res, comp) {
   const icon = res.win ? "🏆" : "📊";
-  const title = res.win ? "Victory!" : "Results";
+  const title = res.win ? "Victory!" : "Close, but not enough";
   const titleClass = res.win ? "win" : "loss";
   
   let rivalText = "";
@@ -518,12 +592,28 @@ function showCompResults(res, comp) {
     rivalText = `<p class="story-text">${rivalStatus}</p>`;
   }
   
+  // Show score breakdown
+  const breakdown = res.details ? `
+    <div class="score-breakdown">
+      <h4>Score Breakdown</h4>
+      <div class="breakdown-grid">
+        <div class="breakdown-item"><span class="label">Core Skills:</span> <span class="value">${res.details.core}</span></div>
+        <div class="breakdown-item"><span class="label">Menu Impact:</span> <span class="value">${res.details.menuImpact}</span></div>
+        <div class="breakdown-item"><span class="label">Prep Bonus:</span> <span class="value">+${res.details.prepBonus}</span></div>
+        <div class="breakdown-item"><span class="label">Approach:</span> <span class="value">${res.details.approachMod >= 0 ? '+' : ''}${res.details.approachMod}</span></div>
+        <div class="breakdown-item"><span class="label">Variance:</span> <span class="value">${res.details.rng >= 0 ? '+' : ''}${res.details.rng}</span></div>
+        <div class="breakdown-item"><span class="label">Penalties:</span> <span class="value bad">-${res.details.totalPenalty}</span></div>
+      </div>
+    </div>
+  ` : '';
+  
   el("compResultTitle").textContent = comp.name;
   el("compResultContent").innerHTML = `
     <div class="result-icon">${icon}</div>
     <div class="result-title ${titleClass}">${title}</div>
-    <div class="result-details">Score: ${res.score} / Target: ${res.target}</div>
+    <div class="result-details">Your Score: ${res.score} / Target: ${res.target}</div>
     ${rivalText}
+    ${breakdown}
     <div class="hr"></div>
     <p class="story-text muted">
       Approach: ${res.plan?.approach || 'standard'} • 
@@ -536,11 +626,19 @@ function showCompResults(res, comp) {
 }
 
 el("btnCompContinue").addEventListener("click", () => {
+  // Return to game screen after competition
   showScreen("game");
   renderGame();
 });
 
 function advanceWeek() {
+  // Validate can advance
+  const validation = competitionManager.canAdvanceWeek(S);
+  if (!validation.ok) {
+    alert(validation.reason);
+    return;
+  }
+  
   systemNextWeek(S);
   saveState(S);
   
@@ -592,14 +690,14 @@ function showSeasonEnd() {
 
 el("btnPlayAgain").addEventListener("click", () => {
   resetLocal();
-  S = defaultState("v0.4.0");
+  S = defaultState("v0.5.0");
   saveState(S);
   showScreen("title");
 });
 
 el("btnExportFinal").addEventListener("click", () => exportTelemetry(S));
 
-// PAUSE MENU
+// ===== PAUSE MENU =====
 el("btnMenu").addEventListener("click", () => {
   el("pauseMenu").classList.add("active");
 });
@@ -629,6 +727,7 @@ el("btnHelp").addEventListener("click", () => {
         <li>Scout rival + test cook before competitions</li>
         <li>Manage fatigue or consistency drops</li>
         <li>Clear sponsor obligations on time</li>
+        <li><strong>Complete competitions to advance weeks</strong></li>
       </ul>
     </div>
   `;
@@ -639,14 +738,14 @@ el("btnCloseHelp").addEventListener("click", () => {
 });
 
 el("btnQuitToTitle").addEventListener("click", () => {
-  if (confirm("Quit to title? Unsaved progress will be lost.")) {
+  if (confirm("Quit to title? Progress will be saved.")) {
     saveState(S);
     el("pauseMenu").classList.remove("active");
     showScreen("title");
   }
 });
 
-// KPIs and Log
+// ===== KPIs and Log =====
 function renderKPIs() {
   const kpis = el("kpis");
   const calc = computeMenu(S.menu, S.flags);
@@ -668,12 +767,13 @@ function renderRecentLog() {
   const recent = (S.telemetry || []).slice(0, 5);
   
   log.innerHTML = recent.map(e => {
-    const result = e.type === "competition" ? (e.result?.win ? "WIN" : "LOSS") : "";
-    return `<div class="entry"><strong>${e.name}</strong> <span class="muted">${result}</span></div>`;
+    const result = e.type === "competition" ? (e.result?.win ? "✓ WIN" : "✗ LOSS") : "";
+    const resultClass = e.type === "competition" ? (e.result?.win ? "good" : "bad") : "";
+    return `<div class="entry"><strong>${e.name}</strong> <span class="${resultClass}">${result}</span></div>`;
   }).join("");
 }
 
-// INIT
+// ===== INIT =====
 if (S.started && currentScreen === "title") {
   showScreen("game");
   renderGame();
