@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Culinary Strategy Sim — v0.3.0</title>
+<link rel="stylesheet" href="./styles.css"/></head><body>
+<header><div class="wrap topbar">
+  <div class="brand"><span class="badge"><span class="dot"></span> Culinary Strategy Sim</span><span class="muted small">v0.3.0 • Flat modular • No folders</span></div>
+  <div class="row"><span class="muted small">Build</span><input id="buildId" class="input" value="v0.3.0" style="width:160px"/>
+    <button id="btnTutorialTop" class="ghost">Tutorial</button>
+    <button id="btnNew">New</button><button id="btnSave">Save</button><button id="btnExport">Export</button>
+    <button id="btnReset" class="ghost">Reset Local</button>
+  </div></div></header>
+<main class="grid">
+  <section class="card">
+    <div class="row between">
+      <div style="flex:1">
+        <h1 id="title">Not started</h1>
+        <div id="subtitle" class="muted small">Choose a country and press Start.</div>
+        <div class="row" style="margin-top:10px">
+          <div class="progress"><div id="progressFill"></div></div>
+          <div class="muted small" id="progressText">Season progress: 0%</div>
+        </div>
+      </div>
+      <div class="row"><select id="countrySelect" class="input"></select><button id="btnStart" class="accent">Start</button></div>
+    </div>
+    <div class="hr"></div>
+    <div class="tabs">
+      <div class="tab active" id="tabDashboard">Dashboard</div>
+      <div class="tab" id="tabMenu">Menu Lab</div>
+      <div class="tab" id="tabComp">Competition</div>
+      <div class="tab" id="tabHelp">Help</div>
+      <div class="tab" id="tabReport" style="display:none">Report</div>
+    </div>
+    <div class="hr"></div>
+    <div id="kpis" class="kpis"></div>
+    <div class="hr"></div>
+    <div id="storyBlock"></div>
+    <div class="hr"></div>
+    <div id="mainBlock"></div>
+  </section>
+  <aside class="card">
+    <div class="row between"><h2>Telemetry Feed</h2><div class="muted small">Export JSON for build comparisons</div></div>
+    <div class="hr"></div><div id="log" class="log"></div>
+  </aside>
+</main>
+<div class="modalBack" id="modalBack" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Tutorial">
+    <div class="row between"><h2 id="modalTitle">Tutorial</h2><button id="modalClose" class="ghost">Close</button></div>
+    <div class="hr"></div><div id="modalBody"></div><div class="hr"></div>
+    <div class="row between"><button id="modalPrev" class="ghost">Back</button><button id="modalNext" class="accent">Next</button></div>
+  </div>
+</div>
+<script type="module" src="./ui.js"></script></body></html>
