@@ -1,299 +1,409 @@
-# Quick Start Guide - v0.5.0 Modular Edition
+# 🚀 QUICKSTART GUIDE — The Final Season v0.5.2
 
-Get started with the new modular architecture in 5 minutes.
+Get playing in 5 minutes! This guide covers everything you need to start your culinary competition journey.
 
-## 🚀 Installation
+## ⚡ Super Quick Start
 
-### Option 1: Fresh Install
-1. Download all files from v0.5.0
-2. Upload to your web server or GitHub Pages
-3. Open `index.html` in browser
-4. Play!
+### 1. Deploy Files
+Upload all files to a web server (GitHub Pages, Netlify, Vercel, or any static host).
 
-### Option 2: Update Existing Game
-1. Add new module files:
-   - `config.js`
-   - `utils.js`
-   - `scoring.js`
-   - `state-manager.js`
-   - `achievements.js`
-2. Replace `systems.js` with `systems_v050.js`
-3. Follow [Migration Guide](./MIGRATION_GUIDE.md)
-
-## 🎮 Basic Usage
-
-### Playing the Game
-
-**Start New Game:**
-1. Click "New Game" on title screen
-2. Select your country
-3. Read backstory
-4. Begin season
-
-**During Gameplay:**
-- **Story Tab**: Make narrative choices
-- **Actions Tab**: Take weekly actions
-- **Menu Lab**: Design your dishes
-- **Competition Tab**: Enter competitions (weeks 3, 6, 9, 12)
-
-**Controls:**
-- Click tabs to switch views
-- ESC or Menu button for pause menu
-- Auto-saves after important actions
-
-### First Playthrough Tips
-
-**Week 1-2**: Focus on story choices and building stats
-**Week 3**: Your first competition - keep it simple
-**Week 4-5**: Train technique or R&D menu
-**Week 6**: Major competition - scout rival first
-**Week 7**: Take recovery week if fatigue is high
-**Week 9**: Speed competition - test cook beforehand
-**Week 12**: Grand final - use your best menu
-
-## 🔧 Customization
-
-### Easy Difficulty Changes
-
-Open `config.js` and change:
-
-```javascript
-// Make game easier
-export const CONFIG = {
-  STARTING_BUDGET: 1500,    // More money
-  COMP_TARGET_FINAL: 73,    // Lower final target
-  EVENT_CHANCE_PER_WEEK: 0.3  // Fewer random events
-};
+### 2. Open in Browser
+```
+https://your-domain.com/index.html
 ```
 
-### Change Scoring Balance
+### 3. Start Playing!
+- Tap "New Game"
+- Choose your country
+- Read your backstory
+- Begin your 20-week season
 
-Open `config.js`:
+## 📱 Mobile vs Desktop
 
-```javascript
-SCORING: {
-  palate: 0.35,        // Make palate more important
-  technique: 0.25,     // Make technique less important
-  cleanliness: 0.22,
-  consistency: 0.18
-}
-```
+### Mobile (Recommended for v0.5.2)
+- **Bottom tab navigation** for easy thumb access
+- **Full-screen tabs** for maximum space
+- **44px+ touch targets** for easy tapping
+- **Works on any device** - phone, tablet, or desktop
 
-### Add New Menu Items
+### Desktop
+- Same mobile-friendly interface works great
+- Bottom tabs still appear at bottom of screen
+- Larger viewing area for stats and content
 
-Open `data_menu_parts.js` and add to relevant array:
+## 🎮 First Playthrough Guide
 
-```javascript
-proteins: [
-  {
-    id: "wagyu",
-    name: "Wagyu Beef",
-    cost: 400,
-    prep: 11,
-    tech: 4,
-    palate: 3,
-    cre: 1,
-    risk: 3,
-    tags: ["luxury"]
-  },
-  // ... existing items
-]
-```
+### Character Creation (2 minutes)
+1. **Choose Country** - Each has unique perks
+   - France: Technique + Palate
+   - Japan: Technique + Cleanliness
+   - Italy: Creativity + Palate
+   - Peru: Creativity focused
+   - Thailand: Balance
+   - Denmark: Innovation
 
-### Create New Achievement
+2. **Read Backstory** - Learn your motivation
 
-Open `achievements.js`:
+3. **Begin Season** - Start Week 1
 
-```javascript
-export const ACHIEVEMENTS = {
-  // ... existing achievements
-  
-  my_new_achievement: {
-    id: "my_new_achievement",
-    name: "Master Chef",
-    desc: "Win all competitions with 85+ score",
-    icon: "👨‍🍳",
-    check: (state) => {
-      const comps = (state.telemetry || [])
-        .filter(e => e.type === "competition");
-      return comps.length >= 4 && 
-             comps.every(c => c.result?.win && c.result?.score >= 85);
-    }
-  }
-};
-```
+### Week 1-2: Getting Started
+**Goals**: Learn the interface, build fundamentals
 
-## 📊 Understanding the Systems
+**Story Tab** 📖
+- Read weekly narrative
+- Make your first choice
+- Choices affect your stats and story
 
-### Stats Explained
+**Actions Tab** ⚡
+- Take one action per week
+- Start with "Knife Work" or "Taste Training"
+- Build core skills (technique, palate)
+- Click "Advance Week" when ready
 
-**Skills** (Higher is better)
-- **Technique**: Execution quality
-- **Palate**: Flavor judgment  
-- **Creativity**: Innovation ability
-- **Cleanliness**: Organization
-- **Consistency**: Reliability
-- **Composure**: Stress handling
+**Menu Tab** 🍽️
+- Not urgent yet (competition is Week 3)
+- Explore ingredient options
+- See how stats affect your menu
 
-**Resources**
-- **Budget**: Money for expenses
-- **Reputation**: Opens opportunities
-- **Prep**: Readiness for service
+**Stats Tab** 📊
+- Check your current stats
+- See activity log
+- Monitor fatigue and budget
 
-**Conditions** (Manage carefully)
-- **Morale**: Team spirit (keep high)
-- **Fatigue**: Exhaustion (keep low)
-- **Risk**: Chance of failure (keep low)
+### Week 3: First Competition! 🏆
+**Goal**: Score 70+ to pass Local Heat
 
-### Menu System
+**Preparation (Week 2)**:
+1. **Design Menu** 🍽️
+   - Choose: Protein + Vegetable + Starch + Sauce
+   - Keep it simple (low risk)
+   - Example: Chicken + Carrot + Potato + Butter Sauce
+   - Save your menu
 
-**Components:**
-1. Protein (chicken, duck, fish, etc.)
-2. Technique (roast, sous-vide, braise, etc.)
-3. Sauce (jus, beurre blanc, nam jim, etc.)
-4. Garnish (knife cuts, herbs, pickles, etc.)
-5. Dessert (citrus, chocolate, tea, etc.)
+2. **Optional Actions** ⚡
+   - Test Cook ($50): Reduces variance
+   - Scout Rival ($100): See what they're planning
 
-**Menu Stats:**
-- **Cost**: How much to prepare
-- **Prep Load**: Time/effort required
-- **Wow Factor**: Impression on judges
-- **Risk**: Chance of mistakes
+**Competition Day (Week 3)**:
+1. Tab "🏆 Compete" will appear and pulse
+2. Switch to Competition tab
+3. Check **Readiness Checker**:
+   - Budget: ✓ (Have $50 for entry?)
+   - Fatigue: ✓ (Below 60?)
+   - Risk: ✓ (Menu risk below 25?)
+   - Menu Prep: ✓ (Matches your prep stat?)
+   - Scouted: Optional
+   - Tested: Optional
 
-**Menu Strategy:**
-- Match prep load to your prep stat
-- Higher wow = better scores
+4. Choose **Approach**:
+   - Safe: Lower scores but consistent
+   - Standard: Balanced (recommended)
+   - Bold: Higher ceiling but risky
+
+5. **Enter Competition**
+
+6. **Results Screen**:
+   - See your score
+   - See rival's score
+   - Read detailed breakdown
+   - Click "Continue"
+
+### Week 4-5: Building Momentum
+**Goals**: Improve skills, refine menu
+
+- Train your weaker stats
+- Experiment with menu
+- Build budget (Fundraise action)
+- Manage fatigue (Recovery Session if needed)
+
+### Week 6: Signature Dish Competition
+**Goal**: Score 70+ with creative menu
+
+**New Challenge**: Tests your menu creativity
+- Use more interesting ingredients
+- Higher wow factor = better scores
 - Balance risk vs reward
-- Test cook before competitions
+- Test cook recommended
 
-### Competition Scoring
+### Week 7-8: Mid-Season
+**Goals**: Peak performance prep
 
-**Formula (simplified):**
+- Optimize your menu
+- Build all stats to 60+
+- Keep fatigue manageable
+- Save budget for Week 12
+
+### Week 9: Speed & Steel Competition
+**Goal**: Score 70+ under pressure
+
+**New Challenge**: Tests technique
+- Technical execution matters most
+- Keep menu proven and tested
+- Low risk is smart here
+
+### Week 10-11: Final Preparation
+**Goals**: Perfect your craft
+
+- All stats to 70+
+- Perfect your menu
+- Build reputation
+- Save budget for final
+
+### Week 12: Grand Final! 🏅
+**Goal**: Score 78+ to win
+
+**The Big One**:
+1. **Week 11 Preparation**:
+   - Test cook your menu
+   - Scout rival
+   - Full recovery
+   - Check all stats
+
+2. **Week 12 - Competition Day**:
+   - Review readiness (aim for READY)
+   - Choose Bold approach if stats are 75+
+   - Otherwise Standard is safer
+   - Enter competition
+
+3. **Results & Ending**:
+   - See your final score
+   - Read your ending (changes based on performance)
+   - Export telemetry to see full stats
+   - Play again with different country!
+
+## 🎯 Quick Tips for Success
+
+### Stats Priority
+1. **Technique** (most important) - Affects all competitions
+2. **Palate** (second most) - Flavor is critical
+3. **Cleanliness** (essential) - HACCP compliance required
+4. **Creativity** (situational) - Matters for Weeks 6 & 12
+5. **Prep** (support stat) - Helps with complex menus
+
+### Budget Management
+- Start: $1000
+- Entry fees: $50 per competition (×4 = $200)
+- Test cooks: $50 each (~4 = $200)
+- Scouting: $100 each (~2 = $200)
+- Recovery: $50 each (~2 = $100)
+- Ingredients: $200-400
+- **Total needed**: ~$900-1200
+- **Buffer**: Fundraise 1-2 times
+
+### Fatigue Management
+- Starts at 0
+- Most actions: +2-3 fatigue
+- Natural recovery: -5 per week
+- Recovery action: -10 fatigue
+- **Danger zone**: 60+ (penalties start)
+- **Critical**: 80+ (major penalties)
+- **Tip**: Take recovery Week 7 and Week 11
+
+### Menu Strategy
+**Early Game (Week 3)**:
+- Simple ingredients
+- Low risk (under 20)
+- Focus on execution
+
+**Mid Game (Week 6)**:
+- More interesting ingredients
+- Medium risk (20-25)
+- Showcase creativity
+
+**Late Game (Weeks 9 & 12)**:
+- Proven combinations
+- Calculated risk (under 25)
+- Perfect execution
+
+### Risk Management
+- Low Risk (10-15): Safe but lower ceiling
+- Medium Risk (20-25): Sweet spot
+- High Risk (25+): Dangerous, penalties likely
+- **Rule of thumb**: Keep under 25
+
+### When to Scout/Test
+**Scout Rival**:
+- Week 2 (before Week 3 competition)
+- Week 11 (before Week 12 final)
+- Reduces variance by seeing their strategy
+
+**Test Cook**:
+- Week 2, 5, 8, 11 (before competitions)
+- Reduces variance
+- Builds confidence
+- Worth the cost
+
+## 📱 Mobile Navigation
+
+### Bottom Tab Bar
+Always visible at bottom of screen:
+
 ```
-Score = Core Skills + Menu Impact + Prep Bonus 
-        + Approach Modifier + Emphasis Bonus
-        - Penalties (fatigue + risk)
-        ± Random Variance
+📖 Story → 📖 Read narratives, make choices
+⚡ Actions → Take weekly actions, advance week
+🍽️ Menu → Design your competition menu
+🏆 Compete → Enter competitions (weeks 3, 6, 9, 12)
+📊 Stats → View all stats and progress
 ```
 
-**Core Skills**: Your technique, palate, cleanliness, consistency
-**Menu Impact**: Your creativity + menu wow factor
-**Prep Bonus**: Being prepared vs menu requirements
-**Penalties**: High fatigue and risk hurt you
-**Variance**: Randomness (reduce with scouting + testing)
+### Tab Usage
+- **Tap tab** to switch view
+- **Tap anywhere on cards** to select
+- **Scroll within tab** to see more content
+- **Active tab highlighted** in blue
 
-**Competition Approaches:**
-- **Safe**: +4 bonus, low variance (6)
-- **Standard**: No modifier, medium variance (10)
-- **Bold**: -2 penalty, high variance (15)
+### Competition Tab
+- **Hidden** on non-competition weeks
+- **Appears** on weeks 3, 6, 9, 12
+- **Pulses** when you need to compete
+- **Required** to advance to next week
 
-### Weekly Actions
+## 🎓 Understanding the Numbers
 
-**Train Systems**: Improve technique + cleanliness
-**R&D Menu**: Improve creativity + palate
-**Sponsor Meetings**: Get money (success chance based on rep)
-**Deliver Sponsor Pack**: Clear obligations
-**Community Events**: Build reputation
-**Scout Rival**: Reduce competition variance
-**Recovery Week**: Reduce fatigue, restore morale
+### Score Components
+Your competition score (0-100) comes from:
+1. **Base Skills** (60-70%): Technique, Palate, Creativity, Cleanliness
+2. **Menu Bonus** (10-15%): Wow factor, creativity bonuses
+3. **Prep Bonus** (5-10%): Being well-prepared
+4. **Approach** (modifier): Safe/Standard/Bold choice
+5. **Variance** (±5-15): Random element (reduced by scouting/testing)
+6. **Penalties** (negative): High fatigue, high risk, prep mismatch
 
-**Rule**: One action per week
+### Target Scores
+- **70**: Pass (minimum to advance)
+- **75**: Good performance
+- **78**: Final target (win the season)
+- **80+**: Excellence
+- **85+**: Legendary
 
-## 🎯 Winning Strategies
+### Readiness Checker
+**GREEN (READY)**: 5-6 checks passed
+- Optimal competition conditions
+- Low penalty risk
+- High success chance
 
-### Conservative Approach
-- Week 1: Story choice (standards/organization)
-- Week 2: Train Systems
-- Week 3: COMPETITION (safe approach)
-- Week 4-5: R&D Menu + Train
-- Week 6: Scout → COMPETITION (standard)
-- Week 7: Recovery Week
-- Week 8: Community Events
-- Week 9: Test Cook → COMPETITION (safe)
-- Week 10-11: Train + Sponsor
-- Week 12: FINAL (safe approach)
+**YELLOW (FAIR)**: 3-4 checks passed
+- Acceptable conditions
+- Some penalty risk
+- Decent success chance
 
-### Aggressive Approach
-- Build high-risk, high-reward menu early
-- Take Bold approach in competitions
-- Manage fatigue with recovery
-- Hope for good variance rolls
+**RED (RISKY)**: 0-2 checks passed
+- Poor conditions
+- High penalty risk
+- Competition still possible but dangerous
 
-### Balanced Approach
-- Mix training and R&D
-- Use Standard approach
-- Scout + Test Cook before big competitions
-- Keep stats above 70
-- Manage obligations carefully
+## 🔧 Quick Customization
 
-## 🏆 Achievement Hunting
+### Make Game Easier (config.js)
+```javascript
+STARTING_BUDGET: 1500,        // More money (default: 1000)
+COMP_TARGET_FINAL: 75,        // Easier final (default: 78)
+FATIGUE_RECOVERY_RATE: 7,     // Faster recovery (default: 5)
+```
 
-**Easy Achievements:**
-- Master Technique (100+ technique)
-- Wealthy ($2000+ budget)
-- Famous (30+ reputation)
+### Make Game Harder (config.js)
+```javascript
+STARTING_BUDGET: 800,         // Less money
+COMP_TARGET_FINAL: 80,        // Harder final
+EVENT_CHANCE_PER_WEEK: 0.4,   // More random events
+```
 
-**Medium Achievements:**
-- Clean Sweep (win all 4 competitions)
-- Balanced Chef (all stats 70+)
-- Debt Free (finish with no obligations)
+## 🐛 Common Issues
 
-**Hard Achievements:**
-- Perfect Score (85+ in competition)
-- Iron Chef (fatigue never >60)
-- Rival Crusher (beat rival every time)
+### "Can't advance week"
+→ Check if it's a competition week (3, 6, 9, 12)
+→ Must complete competition first
+→ Competition tab will be pulsing
 
-## 🐛 Troubleshooting
+### "Score seems low"
+→ Check readiness checker
+→ High fatigue? (penalties start at 60)
+→ High risk? (penalties start at 25)
+→ Did you test cook and scout?
 
-**Game won't load:**
-- Check browser console (F12)
-- Must use HTTP server (not file://)
-- Try incognito mode
+### "Out of money"
+→ Use Fundraise action (+$200)
+→ Choose cheaper ingredients
+→ Skip optional test cooks
+→ Plan budget for 4 competitions
 
-**Stats seem broken:**
-- Export telemetry to see calculations
-- Check console for errors
-- Verify CONFIG values
+### "Too much fatigue"
+→ Use Recovery Session action (-10 fatigue)
+→ Natural recovery: -5 per week
+→ Don't overtrain before competitions
 
-**Save disappeared:**
-- Check localStorage in browser
-- May need to start new game
-- Use Export feature to backup
+## 📈 Advanced Tips
 
-**Score calculation unclear:**
-- Check telemetry after competition
-- Look at result.details object
-- Compare with scoring.js formulas
+### Stat Optimization
+- Get all stats to 60 by Week 6
+- Focus on 2-3 stats to 80+ by Week 12
+- Don't neglect cleanliness (HACCP required)
 
-## 📚 Next Steps
+### Menu Synergy
+- Match protein + sauce (butter with fish, tomato with meat)
+- Consider prep time (high prep = need high prep stat)
+- Balance wow factor with risk
 
-1. **Play through once** to understand mechanics
-2. **Read full README** for detailed info
-3. **Experiment with config.js** to tune difficulty
-4. **Try different countries** for variety
-5. **Create custom achievements**
-6. **Balance your own menu items**
-7. **Share your mods**
+### Approach Selection
+**Safe**: When stats are 50-65
+**Standard**: When stats are 65-75
+**Bold**: When stats are 75+ and fully prepared
 
-## 🔗 Resources
+### Competition Mindset
+- Week 3: Learning experience
+- Week 6: Test your menu
+- Week 9: Build confidence
+- Week 12: Everything matters
 
-- [Full README](./README_v050.md) - Complete documentation
-- [Migration Guide](./MIGRATION_GUIDE.md) - Upgrade from v0.4
-- Browser Console (F12) - Debug and explore
-- [GitHub Issues] - Report bugs (if applicable)
+## 🎯 Winning Strategy Summary
 
-## 💡 Pro Tips
+1. **Build technique and palate** (Weeks 1-3)
+2. **Simple menu for Week 3** (pass with 70+)
+3. **Expand skills** (Weeks 4-5)
+4. **Creative menu for Week 6** (show innovation)
+5. **Optimize approach** (Weeks 7-8)
+6. **Technical precision for Week 9** (prove mastery)
+7. **Perfect everything for Week 12** (win it all)
 
-✅ Scout rival before Week 6 competition
-✅ Test cook before Week 12 final
-✅ Keep fatigue below 50
-✅ Clear obligations on time
-✅ Save budget for Week 12 entry fee
-✅ Match menu prep to your prep stat
-✅ Export telemetry to study scoring
+## 🏆 Multiple Endings
+
+Your ending depends on:
+- Final score (65-100)
+- Reputation (high, medium, low)
+- Competition victories (0-4 wins)
+
+Play multiple times to see all endings!
+
+## 📊 After Your First Game
+
+### Export Telemetry
+- Menu → Export Telemetry
+- Download JSON file
+- Review all actions, scores, choices
+- Learn what worked
+
+### Try Different Countries
+Each country has unique perks and story
+
+### Experiment with Menus
+Find your perfect combination
+
+### Optimize Your Strategy
+Can you score 85+?
+
+## 🎮 Ready to Play!
+
+You now know everything you need. Start your first game and learn by doing!
+
+**Remember**:
+- It's okay to not pass Week 3 on first try
+- Experiment with different approaches
+- The readiness checker is your friend
+- Have fun with the narrative choices
+
+**Good luck, Chef!** 👨‍🍳✨
 
 ---
 
-**Have Fun!** 🎮👨‍🍳
-
-Remember: It's about the journey, not just winning. Try different strategies, experiment with builds, and enjoy the narrative!
+**Questions?** Check the full README.md for detailed explanations of every system.
+**Issues?** Check browser console for errors, try hard refresh (Ctrl+F5).
