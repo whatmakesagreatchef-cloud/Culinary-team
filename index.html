@@ -1,7 +1,15 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="description" content="The Final Season - A strategic culinary competition simulator inspired by Football Manager"/>
 <title>The Final Season — Culinary Strategy Game</title>
-<link rel="stylesheet" href="./styles.css"/></head><body>
+<link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
 
 <!-- TITLE SCREEN -->
 <div id="titleScreen" class="screen active">
@@ -13,9 +21,9 @@
     <div class="title-menu">
       <button class="title-btn" id="btnNewGame">New Game</button>
       <button class="title-btn" id="btnContinue">Continue</button>
-      <button class="title-btn ghost" id="btnAbout">About</button>
+      <button class="title-btn" id="btnAbout">About</button>
     </div>
-    <div class="version">v0.4.0 — Narrative Edition</div>
+    <div class="version">v0.5.2 — Ultimate Edition</div>
   </div>
 </div>
 
@@ -30,7 +38,7 @@
     <div class="story-content">
       <p class="story-text">
         You've spent years in kitchens around the world. Now, the call has come: 
-        a 12-week competition circuit that could define your career forever.
+        a 20-week competition circuit that could define your career forever.
       </p>
       <p class="story-text">
         But first — <em>where does your story begin?</em>
@@ -74,37 +82,45 @@
 
 <!-- MAIN GAME -->
 <div id="gameScreen" class="screen">
-  <header><div class="wrap topbar">
-    <div class="brand">
-      <span class="badge"><span class="dot"></span> <span id="headerWeek">Week 1</span></span>
-      <span class="muted small" id="headerCountry"></span>
-    </div>
-    <div class="row">
-      <span class="muted small">Build</span><input id="buildId" class="input" value="v0.4.0" style="width:140px"/>
-      <button id="btnMenu" class="ghost">Menu</button>
-    </div>
-  </div></header>
-
-  <main class="grid">
-    <section class="card">
-      <div class="tabs">
-        <div class="tab active" id="tabStory">Story</div>
-        <div class="tab" id="tabActions">Actions</div>
-        <div class="tab" id="tabMenu">Menu Lab</div>
-        <div class="tab" id="tabComp" style="display:none">Competition</div>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div>
+          <div id="headerWeek">Week 1</div>
+          <div id="headerCountry"></div>
+        </div>
       </div>
-      <div class="hr"></div>
-      <div id="mainContent"></div>
-    </section>
-    
-    <aside class="card">
-      <h2>Your Progress</h2>
-      <div class="hr"></div>
-      <div id="kpis" class="kpis"></div>
-      <div class="hr"></div>
-      <div id="recentLog" class="log-compact"></div>
-    </aside>
-  </main>
+      <button id="btnMenu">Menu</button>
+    </div>
+  </header>
+
+  <div class="main-content-area">
+    <div id="mainContent"></div>
+  </div>
+
+  <!-- Mobile-first tab bar (bottom navigation) -->
+  <div class="tab-bar">
+    <button class="tab-btn" id="tabStory">
+      <span class="tab-btn-icon">📖</span>
+      <span>Story</span>
+    </button>
+    <button class="tab-btn" id="tabActions">
+      <span class="tab-btn-icon">⚡</span>
+      <span>Actions</span>
+    </button>
+    <button class="tab-btn" id="tabMenu">
+      <span class="tab-btn-icon">🍽️</span>
+      <span>Menu</span>
+    </button>
+    <button class="tab-btn" id="tabComp" style="display:none">
+      <span class="tab-btn-icon">🏆</span>
+      <span>Compete</span>
+    </button>
+    <button class="tab-btn" id="tabStats">
+      <span class="tab-btn-icon">📊</span>
+      <span>Stats</span>
+    </button>
+  </div>
 </div>
 
 <!-- COMPETITION RESULTS -->
@@ -132,7 +148,7 @@
       <div id="seasonEndContent" class="story-prose"></div>
       <div class="title-menu">
         <button class="title-btn" id="btnPlayAgain">Play Again</button>
-        <button class="title-btn ghost" id="btnExportFinal">Export Telemetry</button>
+        <button class="title-btn" id="btnExportFinal">Export Telemetry</button>
       </div>
     </div>
   </div>
@@ -140,30 +156,25 @@
 
 <!-- PAUSE MENU -->
 <div class="modalBack" id="pauseMenu" aria-hidden="true">
-  <div class="modal pause-modal" role="dialog">
+  <div class="modal">
     <h2>Menu</h2>
     <div class="hr"></div>
-    <div class="menu-options">
-      <button id="btnResume" class="btn-primary">Resume</button>
-      <button id="btnSaveGame" class="ghost">Save Game</button>
-      <button id="btnExportTelemetry" class="ghost">Export Telemetry</button>
-      <button id="btnHelp" class="ghost">Help & Tips</button>
-      <button id="btnQuitToTitle" class="ghost warn">Quit to Title</button>
+    <div class="title-menu">
+      <button id="btnResume" class="title-btn">Resume</button>
+      <button id="btnSaveGame" class="title-btn">Save Game</button>
+      <button id="btnExportTelemetry" class="title-btn">Export Telemetry</button>
+      <button id="btnQuitToTitle" class="title-btn">Quit to Title</button>
     </div>
   </div>
 </div>
 
-<!-- HELP MODAL -->
-<div class="modalBack" id="helpModal" aria-hidden="true">
-  <div class="modal" role="dialog">
-    <div class="row between">
-      <h2>Help & Tips</h2>
-      <button id="btnCloseHelp" class="ghost">Close</button>
-    </div>
-    <div class="hr"></div>
-    <div id="helpContent"></div>
-  </div>
-</div>
-
+<!-- Core modules (load order matters) -->
+<script type="module" src="./config.js"></script>
+<script type="module" src="./utils.js"></script>
+<script type="module" src="./scoring.js"></script>
+<script type="module" src="./achievements.js"></script>
+<script type="module" src="./state-manager.js"></script>
+<script type="module" src="./competition-manager.js"></script>
 <script type="module" src="./ui.js"></script>
-</body></html>
+</body>
+</html>
