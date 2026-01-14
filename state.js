@@ -9,5 +9,8 @@ export function defaultState(buildId="v0.3.0"){
   obligations:[],rival:{id:null,name:null,countryId:null,score:0,wins:0}};
 }
 export function loadState(){ try{ const raw=localStorage.getItem(SAVE_KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
-export function saveState(S){ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }
-export function resetLocal(){ localStorage.removeItem(SAVE_KEY); }
+// On some mobile browsers (notably iOS Safari Private mode or restricted storage contexts),
+// localStorage writes can throw and would otherwise break all UI clicks that attempt to save.
+// We fail-soft here so the game remains playable even without persistence.
+export function saveState(S){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){ /* ignore */ } }
+export function resetLocal(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){ /* ignore */ } }

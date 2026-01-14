@@ -7,7 +7,7 @@ import { defaultState, loadState, saveState, resetLocal } from "./state.js";
 import { log, snap, exportTelemetry } from "./telemetry.js";
 import { competitionManager, getCompetitionUIState } from "./competition-manager.js";
 
-let S = loadState() || defaultState("v0.5.1");
+let S = loadState() || defaultState("v0.5.4");
 let currentScreen = "title";
 let selectedCountry = null;
 
@@ -46,7 +46,7 @@ function showScreen(screenName) {
 
 // ===== TITLE SCREEN =====
 el("btnNewGame").addEventListener("click", () => {
-  S = defaultState("v0.5.1");
+  S = defaultState("v0.5.4");
   saveState(S);
   showScreen("charCreation");
   renderCountrySelection();
@@ -64,7 +64,7 @@ el("btnContinue").addEventListener("click", () => {
 });
 
 el("btnAbout").addEventListener("click", () => {
-  alert("The Final Season v0.5.1\n\nA narrative culinary strategy game.\n\nManage your chef through 12 weeks of competition, balancing technique, creativity, fatigue, and rival pressure.");
+  alert("The Final Season v0.5.4\n\nA narrative culinary strategy game.\n\nManage your chef through 12 weeks of competition, balancing technique, creativity, fatigue, and rival pressure.");
 });
 
 // ===== CHARACTER CREATION =====
@@ -116,7 +116,7 @@ el("btnStartJourney").addEventListener("click", () => {
 
 function startSeason(countryId) {
   const country = COUNTRIES.find(c => c.id === countryId);
-  S = defaultState("v0.5.1");
+  S = defaultState("v0.5.4");
   S.countryId = countryId;
   S.started = true;
   
@@ -932,7 +932,7 @@ function showSeasonEnd() {
 
 el("btnPlayAgain").addEventListener("click", () => {
   resetLocal();
-  S = defaultState("v0.5.1");
+  S = defaultState("v0.5.4");
   saveState(S);
   showScreen("title");
 });
