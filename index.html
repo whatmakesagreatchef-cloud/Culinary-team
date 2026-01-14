@@ -1,180 +1,29 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="description" content="The Final Season - A strategic culinary competition simulator inspired by Football Manager"/>
-<title>The Final Season — Culinary Strategy Game</title>
-<link rel="stylesheet" href="./styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Restaurant Empire Sim</title>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-
-<!-- TITLE SCREEN -->
-<div id="titleScreen" class="screen active">
-  <div class="title-container">
-    <div class="title-glow">
-      <h1 class="game-title">THE FINAL SEASON</h1>
-      <p class="game-subtitle">A Culinary Strategy Game</p>
-    </div>
-    <div class="title-menu">
-      <button class="title-btn" id="btnNewGame">New Game</button>
-      <button class="title-btn" id="btnContinue">Continue</button>
-      <button class="title-btn" id="btnAbout">About</button>
-    </div>
-    <div class="version">v0.5.2 — Ultimate Edition</div>
-  </div>
-</div>
-
-<!-- CHARACTER CREATION -->
-<div id="charCreation" class="screen">
-  <div class="story-container">
-    <div class="story-header">
-      <h2>Choose Your Path</h2>
-      <div class="story-progress"><div class="story-progress-bar" style="width:25%"></div></div>
-    </div>
-    
-    <div class="story-content">
-      <p class="story-text">
-        You've spent years in kitchens around the world. Now, the call has come: 
-        a 20-week competition circuit that could define your career forever.
-      </p>
-      <p class="story-text">
-        But first — <em>where does your story begin?</em>
-      </p>
-      
-      <div class="country-grid" id="countryGrid"></div>
-    </div>
-  </div>
-</div>
-
-<!-- BACKSTORY -->
-<div id="backstory" class="screen">
-  <div class="story-container">
-    <div class="story-header">
-      <h2 id="backstoryTitle">Your Journey</h2>
-      <div class="story-progress"><div class="story-progress-bar" style="width:50%"></div></div>
-    </div>
-    
-    <div class="story-content">
-      <div id="backstoryContent" class="story-prose"></div>
-      <button class="btn-primary" id="btnStartJourney">Begin Your Season</button>
-    </div>
-  </div>
-</div>
-
-<!-- WEEK INTRO -->
-<div id="weekIntro" class="screen">
-  <div class="story-container">
-    <div class="story-header">
-      <h2 id="weekTitle">Week 1</h2>
-      <div class="story-progress"><div class="story-progress-bar" id="weekProgressBar"></div></div>
-    </div>
-    
-    <div class="story-content">
-      <div id="weekNarrative" class="story-prose"></div>
-      <div id="weekStats" class="week-stats"></div>
-      <button class="btn-primary" id="btnEnterWeek">Enter Week</button>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN GAME -->
-<div id="gameScreen" class="screen">
-  <header>
-    <div class="topbar">
-      <div class="brand">
-        <div>
-          <div id="headerWeek">Week 1</div>
-          <div id="headerCountry"></div>
-        </div>
-      </div>
-      <button id="btnMenu">Menu</button>
-    </div>
+  <header class="topbar">
+    <div class="topbar__title">Restaurant Empire</div>
+    <div class="topbar__meta" id="topbarMeta"></div>
   </header>
 
-  <div class="main-content-area">
-    <div id="mainContent"></div>
-  </div>
+  <main id="app" class="app"></main>
 
-  <!-- Mobile-first tab bar (bottom navigation) -->
-  <div class="tab-bar">
-    <button class="tab-btn" id="tabStory">
-      <span class="tab-btn-icon">📖</span>
-      <span>Story</span>
-    </button>
-    <button class="tab-btn" id="tabActions">
-      <span class="tab-btn-icon">⚡</span>
-      <span>Actions</span>
-    </button>
-    <button class="tab-btn" id="tabMenu">
-      <span class="tab-btn-icon">🍽️</span>
-      <span>Menu</span>
-    </button>
-    <button class="tab-btn" id="tabComp" style="display:none">
-      <span class="tab-btn-icon">🏆</span>
-      <span>Compete</span>
-    </button>
-    <button class="tab-btn" id="tabStats">
-      <span class="tab-btn-icon">📊</span>
-      <span>Stats</span>
-    </button>
-  </div>
-</div>
+  <nav class="tabbar" id="tabbar">
+    <button class="tab" data-route="setup">Setup</button>
+    <button class="tab" data-route="world">World</button>
+    <button class="tab" data-route="venues">Venues</button>
+    <button class="tab" data-route="ops">Ops</button>
+    <button class="tab" data-route="hq">HQ</button>
+    <button class="tab" data-route="capital">Capital</button>
+    <button class="tab" data-route="sell">Sell</button>
+  </nav>
 
-<!-- COMPETITION RESULTS -->
-<div id="compResults" class="screen">
-  <div class="story-container">
-    <div class="story-header">
-      <h2 id="compResultTitle">Competition Results</h2>
-    </div>
-    
-    <div class="story-content">
-      <div id="compResultContent" class="comp-result"></div>
-      <button class="btn-primary" id="btnCompContinue">Continue</button>
-    </div>
-  </div>
-</div>
-
-<!-- SEASON END -->
-<div id="seasonEnd" class="screen">
-  <div class="story-container">
-    <div class="story-header">
-      <h2>Season Complete</h2>
-    </div>
-    
-    <div class="story-content">
-      <div id="seasonEndContent" class="story-prose"></div>
-      <div class="title-menu">
-        <button class="title-btn" id="btnPlayAgain">Play Again</button>
-        <button class="title-btn" id="btnExportFinal">Export Telemetry</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PAUSE MENU -->
-<div class="modalBack" id="pauseMenu" aria-hidden="true">
-  <div class="modal">
-    <h2>Menu</h2>
-    <div class="hr"></div>
-    <div class="title-menu">
-      <button id="btnResume" class="title-btn">Resume</button>
-      <button id="btnSaveGame" class="title-btn">Save Game</button>
-      <button id="btnExportTelemetry" class="title-btn">Export Telemetry</button>
-      <button id="btnQuitToTitle" class="title-btn">Quit to Title</button>
-    </div>
-  </div>
-</div>
-
-<!-- Core modules (load order matters) -->
-<script type="module" src="./config.js"></script>
-<script type="module" src="./utils.js"></script>
-<script type="module" src="./scoring.js"></script>
-<script type="module" src="./achievements.js"></script>
-<script type="module" src="./state-manager.js"></script>
-<script type="module" src="./competition-manager.js"></script>
-<script type="module" src="./ui.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>
